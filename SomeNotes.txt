@@ -1,0 +1,47 @@
+Some notes I have written, which are probably useless, but I'll still leave them
+here:
+
+
+* Trying to put the secondQuantization routine for rho_1 in a function and 
+calling it from the loops where the matrix elements are calculated, actually 
+increased runtime, even though the number of loops is smaller that way (maybe 
+I am missing something, since I think no element is calculated twice...)
+* In the secondQuantization routine, returning first 0 if that was the case, 
+and only then proceeding to the calculation of the sign and the new state, also 
+did nothing to improve runtime
+
+--------------------------------------------------------------------------------
+We need to create the a molecule object using the molecule class (molecule.py), 
+which actually creates a (or several) atom objects from the atom class (atom.py).
+To each atom are "assigned" contracted Gaussian basis functions through the 
+class BasisSet (basis.py). The basis will be stored in the method bfs of 
+BasisSet, BasisSet.bfs .
+BasisSet.bfs is a list of CGBF which are objects from the CGBS class (CGBS).
+Note that each CGBF is a linear combination of primitive Gaussian basis 
+functions (PGBF). Each CGBF needs the atom position, and the "orbital" powers 
+to be defined (cgbf = CGBF(atom.pos(), power, atom.atid)). One then needs to 
+specify the PGBF that make up the CGBF, by its contraction coefficients and 
+exponents (using cgbf.add_primitive(alpha,coef) to add a PGBF with exponent 
+alpha and coefficient coef).
+
+Now one needs to define the number of electrons of the problem and create the 
+N particle basis (with spin). After obtaining all these multiparticle states 
+(which is a complete basis for our truncated subspace) we only need to calculate 
+the Hamiltonian matrix in this basis.
+For this we need to calculate single particle and double particle integrals, 
+and for that we use Int.py or CGBF.py (which actually calls C subroutines, whose 
+code we don't need to know for the time being - maybe in the future to know how 
+good our estimations are)."
+
+--------------------------------------------------------------------------------
+Let's start by testing Hydrogen (whose exact solution we know) for a small 
+basis set (let's say STO-3G - that's only one CGBF (built from 3 PGBF) and the 
+atom contains one electron (i.e. it's a minimal basis for the problem). In this
+case the Full CI matrix will be 2x2 (because of spin))
+
+Then let's test H2 with STO-3G - (that's only one CGBF (built from 3 PGBF) per 
+atom) and the atom contains two electrons (again, it's a minimal basis for the 
+problem). In this case the Full CI matrix will be 6x6 (including spin).)
+
+--------------------------------------------------------------------------------
+

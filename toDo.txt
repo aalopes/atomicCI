@@ -1,0 +1,5 @@
+To Do:
+* Use the symmetries of the Coulomb and Kinetic integrals to make the code 
+faster (at least the first part of it). This will not change the time complexity 
+of the code, but will make if faster.
+ 
